@@ -10,7 +10,7 @@ class HomeController extends Controller {
 
   async list() {
     const { ctx } = this;
-    ctx.body = '<h1>jspang blog list</h1>';
+    ctx.body = 'api接口';
   }
 }
 
