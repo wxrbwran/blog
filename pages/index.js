@@ -1,37 +1,20 @@
 import React, { useState } from "react";
 import Head from "next/head";
+import axios from "axios";
 import { Row, Col, List, Icon } from "antd";
+import Link from "next/link";
 import Header from "../components/Header";
 import Author from '../components/Author'
 import Advert from '../components/Advert'
 import Footer from '../components/Footer'
+import  servicePath  from '../config/apiUrl'
 import '../static/style/pages/index.css'
 
 
 
-const Home = () => {
-  const [mylist, setMylist] = useState([
-    {
-      title: "免费视频教程",
-      context:
-        "aaaaaa",
-    },
-    {
-      title: "React实战视频教程",
-      context:
-        "React实战视频教程",
-    },
-    {
-      title: "React服务端渲染框架Next.js入门(共12集)",
-      context:
-        "wsadsadasdsadas",
-    },
-    {
-      title: "React Hooks 免费视频教程(共11集)",
-      context:
-        "asdasdsaddasdasd",
-    },
-  ]);
+const Home = ({ list }) => {
+  console.log(list);
+  const [mylist, setMylist] = useState(list);
   return (
     <>
       <Head>
@@ -47,18 +30,16 @@ const Home = () => {
               dataSource={mylist}
               renderItem={(item) => (
                 <List.Item>
-                  <div className="list-title">{item.title}</div>
+                  <div className="list-title">
+                    <Link href={{pathname:'/detailed',query:{id:item.id}}}>
+                     <a>{item.title}</a>
+                   </Link>
+                   </div>
                   <div className="list-icon">
-                    <span>
-                      <Icon type="calendar" /> 2019-06-28
-                    </span>
-                    <span>
-                      <Icon type="folder" /> 视频教程
-                    </span>
-                    <span>
-                      <Icon type="fire" /> 5498人
-                    </span>
-                  </div>
+                      <span><Icon type="calendar" /> {item.addTime}</span>
+                      <span><Icon type="folder" /> {item.typeName}</span>
+                      <span><Icon type="fire" /> {item.view_count}人</span>
+                    </div>
                   <div className="list-context">{item.context}</div>
                 </List.Item>
               )}
@@ -74,4 +55,11 @@ const Home = () => {
     </>
   );
 };
+
+Home.getInitialProps = async ()=> {
+  console.log(111);
+  const res = await axios(servicePath.getArticleList);
+  console.log('远程获取数据结果:',res.data.data);
+  return { list: res.data.data }
+}
 export default Home;
